@@ -32,7 +32,7 @@ export function PasswordForm() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/reset-password", {
+      const res = await fetch("/api/change-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword: current, newPassword: newPw }),

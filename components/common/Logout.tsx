@@ -20,7 +20,7 @@ export default function LogoutButton({ className }: LogoutProps) {
   const handleLogout = async () => {
     setLoading(true);
 
-    await fetch("/api/logout", { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST" });
   
     router.push("/login");
     setUser(null)

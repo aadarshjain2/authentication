@@ -11,7 +11,7 @@ import InputField from "./InputField";
 import PasswordField from "./PasswordField";
 import FormFooter from "./FormFooter";
 import { toast } from "react-toastify";
-import { validateAuthForm } from "@/lib/utils/validation";
+import { validateAuthForm } from "@/utils/validation";
 
 
 const SignIn = () => {
@@ -38,7 +38,7 @@ const SignIn = () => {
 
 
     try {
-      const res = await fetch("/api/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

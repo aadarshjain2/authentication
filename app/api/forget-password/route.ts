@@ -1,6 +1,7 @@
 import crypto from "crypto";
-import User from "@/models/User";
 import { connectDB } from "@/lib/mongodb";
+import User from "@/models/User";
+import { sendResetEmail } from "@/lib/sendEmail";
 
 export async function POST(req: Request) {
   await connectDB();
@@ -9,15 +10,24 @@ export async function POST(req: Request) {
 
   const user = await User.findOne({ email });
 
-  const token = crypto.randomBytes(32).toString("hex");
+  if (!user) {
+    return Response.json({
+      message: "If email exists, reset link sent",
+    });
+  }
 
-  user.resetToken = token;
-  user.resetTokenExpiry = Date.now() + 3600000;
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  user.resetPasswordToken = resetToken;
+  user.resetPasswordExpire = Date.now() + 3600000;
 
   await user.save();
 
+  const resetLink = `${process.env.APP_URL}/reset-password/${resetToken}`;
+
+  await sendResetEmail(email, resetLink);
+
   return Response.json({
-    message: "Reset token generated",
-    token,
+    message: "Reset email sent",
   });
 }

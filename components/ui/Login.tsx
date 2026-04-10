@@ -13,7 +13,7 @@ import PasswordField from "./PasswordField";
 import Checkbox from "./Checkbox";
 import FormHeader from "./FormHeader";
 import FormFooter from "./FormFooter";
-import { validateAuthForm } from "@/lib/utils/validation";
+import { validateAuthForm } from "@/utils/validation";
 const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +41,7 @@ const Login = () => {
 
 
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +124,7 @@ const Login = () => {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                <Link href="#">Forgot password?</Link>
+                <Link href="/forgot-password">Forgot password?</Link>
               </div>
 
               <Button type="submit" variant="primary" fullWidth>
