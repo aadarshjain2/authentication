@@ -1,23 +1,59 @@
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import {connectDB} from "@/lib/mongodb";
 import User from "@/models/User";
-import { connectDB } from "@/libs/mongodb";
 
 export async function POST(req: Request) {
-  await connectDB();
+  try {
+    await connectDB();
 
-  const { token, password } = await req.json();
+    const { currentPassword, newPassword } = await req.json();
 
-  const user = await User.findOne({
-    resetToken: token,
-    resetTokenExpiry: { $gt: Date.now() },
-  });
+    
+    const cookieHeader = req.headers.get("cookie");
+    const token = cookieHeader
+      ?.split("; ")
+      .find((row) => row.startsWith("token="))
+      ?.split("=")[1];
 
-  const hashed = await bcrypt.hash(password, 10);
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    // console.log(token)
 
-  user.password = hashed;
-  user.resetToken = null;
+    
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+// console.log(decoded);
+    const user = await User.findById(decoded.id);
 
-  await user.save();
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
 
-  return Response.json({ message: "Password reset successful" });
+   
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isMatch) {
+      return NextResponse.json(
+        { message: "Current password incorrect" },
+        { status: 400 }
+      );
+    }
+
+    
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    return NextResponse.json({ message: "Password updated successfully" });
+
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Server error" },
+      { status: 500 }
+    );
+  }
 }

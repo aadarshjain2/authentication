@@ -1,10 +1,15 @@
+"use client";
+
 import Header from "@/components/layout/dashboard/Header";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  useAuth();
   return (
     <div className="flex gap-4 h-screen">
       

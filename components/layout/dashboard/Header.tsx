@@ -1,4 +1,5 @@
 "use client"
+import LogoutButton from '@/components/common/Logout'
 import { Bell, Moon, Sun , User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -29,6 +30,7 @@ const Header = () => {
             router.push("/dashboard/profile")
             }} />
           </button>
+          <LogoutButton  className='bg-gray-800 rounded-xl text-white p-3'/>
         </div>
       </div>
 

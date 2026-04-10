@@ -1,50 +1,41 @@
 "use client"
 
 import { useState } from "react";
-import {  Mail,  } from "lucide-react";
+import {  Mail, User } from "lucide-react";
 import { Button } from "../common/Button";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import GradientBackground from "./GradientBackground";
-import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import FormHeader from "./FormHeader";
 import Card from "./Cards";
 import InputField from "./InputField";
 import PasswordField from "./PasswordField";
-import Checkbox from "./Checkbox";
-import FormHeader from "./FormHeader";
 import FormFooter from "./FormFooter";
 
 
-const Login = () => {
+const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name , setName] = useState("")
   const [rememberMe, setRememberMe] = useState(false);
 const router = useRouter();
-  
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
 
-  try {
-    const res = await fetch("/api/login", {
+  const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+
+   let res =  await fetch("/api/signup", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ name ,email, password }),
     });
 
-    if (res.ok) {
-      setEmail("");
-      setPassword("");
-      router.push("/dashboard");
-    } else {
-      toast.error("Login failed");
-    }
-  } catch (error) {
-    console.error("Error:", error);
+  setEmail("")
+  setPassword("")
+  setName("")
+  if(res.ok){
+      router.push("/login")
+
   }
-};
+  };
 
 
   return (
@@ -53,14 +44,23 @@ const handleSubmit = async (e: React.FormEvent) => {
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
           <FormHeader 
-            title="Welcome Back"
-            subtitle="Login to your account to continue"
+            title="Welcome"
+            subtitle="Sign Up to your account to continue"
           />
 
           <Card className="p-6 sm:p-8 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-6">
 
-            
+               <InputField
+                id="name"
+                type="text"
+                label="Name"
+                placeholder="Enter the Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                icon={User}
+                required
+              />
               
               <InputField
                 id="email"
@@ -84,36 +84,25 @@ const handleSubmit = async (e: React.FormEvent) => {
                 required
               />
 
-              <div className="flex items-center justify-between text-sm">
-                <Checkbox
-                  id="remember"
-                  label="Remember me"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <Link href="#">Forgot password?</Link>
-              </div>
 
               <Button type="submit" variant="primary" fullWidth>
-                Login
+                Sign Up
               </Button>
 
 
             </form>
 
-            <FormFooter
-              text="Dont have an account?"
-              linkText="Sign Up"
-              linkHref="/signup"
+            <FormFooter 
+              text="Already have an account?"
+              linkText="Login"
+              linkHref="/login"
             />
           </Card>
         </div>
       </div>
-
-  
-     <GradientBackground/>
+ <GradientBackground/>
     </div>
   );
 };
 
-export default Login;
+export default SignIn;

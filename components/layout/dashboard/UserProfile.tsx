@@ -1,13 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useUserStore } from "@/store/userData";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function UserProfile() {
-  const [name, setName] = useState("John Doe");
-  const [email] = useState("john@example.com");
+  const data = useUserStore((state) => state.user);
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
+  useEffect(() => {
+    if (data) {
+      setName(data.name);
+      setEmail(data.email);
+    }
+  }, [data]);
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,11 +32,11 @@ export default function UserProfile() {
     });
 
     if (res.ok) {
-      alert("Password updated successfully");
+      toast.success("Password updated successfully");
       setCurrentPassword("");
       setNewPassword("");
     } else {
-      alert("Password change failed");
+      toast.error("Password change failed");
     }
   };
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "@/models/User";
-import { connectDB } from "@/libs/mongodb";
+import { connectDB } from "@/lib/mongodb";
 
 export async function POST(req: Request) {
   try {
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     const { email, password } = body;
 
-    // Validate inputs
+   
     if (!email || !password) {
       return NextResponse.json(
         { message: "Email and password are required" },
@@ -31,10 +31,10 @@ export async function POST(req: Request) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Find user
+
     const user = await User.findOne({ email: normalizedEmail });
 
-    // Prevent user enumeration
+    
     if (!user) {
       return NextResponse.json(
         { message: "Invalid email or password" },
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Compare password
+    
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
@@ -52,12 +52,12 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check JWT secret
+    
     if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET not defined");
     }
 
-    // Generate token
+    
     const token = jwt.sign(
       {
         id: user._id,
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       { status: 200 }
     );
 
-    // Secure cookie
+  
     response.cookies.set({
       name: "token",
       value: token,
