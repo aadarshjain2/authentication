@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import {  Mail, User } from "lucide-react";
+import { Mail, User } from "lucide-react";
 import { Button } from "../common/Button";
 import GradientBackground from "./GradientBackground";
 import { useRouter } from "next/navigation";
@@ -10,31 +10,55 @@ import Card from "./Cards";
 import InputField from "./InputField";
 import PasswordField from "./PasswordField";
 import FormFooter from "./FormFooter";
+import { toast } from "react-toastify";
+import { validateAuthForm } from "@/lib/utils/validation";
 
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name , setName] = useState("")
+  const [name, setName] = useState("")
   const [rememberMe, setRememberMe] = useState(false);
-const router = useRouter();
+  const [errors, setErrors] = useState<any>({});
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-   let res =  await fetch("/api/signup", {
-      method: "POST",
-      body: JSON.stringify({ name ,email, password }),
-    });
+    const formData = { name, email, password };
 
-  setEmail("")
-  setPassword("")
-  setName("")
-  if(res.ok){
-      router.push("/login")
+    const validationErrors = validateAuthForm(formData, "signup");
 
-  }
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+
+    try {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+const data = await res.json();
+      if (res.ok) {
+        setEmail("");
+        setPassword("");
+        setName("")
+        toast.success("Signup Successful")
+        router.push("/login");
+      } else {
+        
+        toast.error(data.message || "signup failed");
+      }
+    } catch (error) {
+      toast.error("An error occurred during Signup");
+    }
   };
 
 
@@ -43,7 +67,7 @@ const router = useRouter();
       {/* Left Side - Sign In Form */}
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
-          <FormHeader 
+          <FormHeader
             title="Welcome"
             subtitle="Sign Up to your account to continue"
           />
@@ -51,7 +75,7 @@ const router = useRouter();
           <Card className="p-6 sm:p-8 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-6">
 
-               <InputField
+              <InputField
                 id="name"
                 type="text"
                 label="Name"
@@ -61,7 +85,12 @@ const router = useRouter();
                 icon={User}
                 required
               />
-              
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.name}
+                </p>
+              )}
+
               <InputField
                 id="email"
                 type="email"
@@ -72,7 +101,11 @@ const router = useRouter();
                 icon={Mail}
                 required
               />
-
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email}
+                </p>
+              )}
               <PasswordField
                 id="password"
                 label="Password"
@@ -83,7 +116,11 @@ const router = useRouter();
                 onTogglePassword={() => setShowPassword(!showPassword)}
                 required
               />
-
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password}
+                </p>
+              )}
 
               <Button type="submit" variant="primary" fullWidth>
                 Sign Up
@@ -92,7 +129,7 @@ const router = useRouter();
 
             </form>
 
-            <FormFooter 
+            <FormFooter
               text="Already have an account?"
               linkText="Login"
               linkHref="/login"
@@ -100,7 +137,7 @@ const router = useRouter();
           </Card>
         </div>
       </div>
- <GradientBackground/>
+      <GradientBackground />
     </div>
   );
 };

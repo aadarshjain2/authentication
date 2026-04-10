@@ -13,7 +13,7 @@ export default function DashboardLayout({
   return (
     <div className="flex gap-4 h-screen">
       
-      <div className="w-3xs bg-gray-300 pt-4">
+      <div className="w-3xs text-2xl bg-gray-300 pt-4 px-4">
         sidebar
       </div>
 

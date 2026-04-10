@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import {  Mail,  } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Button } from "../common/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,76 +13,109 @@ import PasswordField from "./PasswordField";
 import Checkbox from "./Checkbox";
 import FormHeader from "./FormHeader";
 import FormFooter from "./FormFooter";
-
-
+import { validateAuthForm } from "@/lib/utils/validation";
 const Login = () => {
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-const router = useRouter();
-  
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
 
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+  const [errors, setErrors] = useState<any>({});
 
-    if (res.ok) {
-      setEmail("");
-      setPassword("");
-      router.push("/dashboard");
-    } else {
-      toast.error("Login failed");
-    }
-  } catch (error) {
-    console.error("Error:", error);
+  const router = useRouter();
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+
+  const formData = { email, password };
+
+      const validationErrors = validateAuthForm(formData, "login");
+
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
   }
-};
 
+
+    try {
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify( formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setEmail("");
+        setPassword("");
+        toast.success("Login Successful");
+        router.push("/dashboard");
+      } else {
+        toast.error(data.message || "Login failed");
+      }
+
+    } catch (error) {
+      toast.error("Server error during login");
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row w-full">
-      {/* Left Side - Sign In Form */}
+
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-background">
+
         <div className="w-full max-w-md space-y-8">
-          <FormHeader 
+
+          <FormHeader
             title="Welcome Back"
             subtitle="Login to your account to continue"
           />
 
           <Card className="p-6 sm:p-8 shadow-sm">
+
             <form onSubmit={handleSubmit} className="space-y-6">
 
-            
-              
-              <InputField
-                id="email"
-                type="email"
-                label="Email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                icon={Mail}
-                required
-              />
+              <div>
+                <InputField
+                  id="email"
+                  type="email"
+                  label="Email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  icon={Mail}
+                />
 
-              <PasswordField
-                id="password"
-                label="Password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                showPassword={showPassword}
-                onTogglePassword={() => setShowPassword(!showPassword)}
-                required
-              />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <PasswordField
+                  id="password"
+                  label="Password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  showPassword={showPassword}
+                  onTogglePassword={() => setShowPassword(!showPassword)}
+                />
+
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
 
               <div className="flex items-center justify-between text-sm">
                 <Checkbox
@@ -98,7 +131,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                 Login
               </Button>
 
-
             </form>
 
             <FormFooter
@@ -106,12 +138,13 @@ const handleSubmit = async (e: React.FormEvent) => {
               linkText="Sign Up"
               linkHref="/signup"
             />
+
           </Card>
         </div>
       </div>
 
-  
-     <GradientBackground/>
+      <GradientBackground/>
+
     </div>
   );
 };

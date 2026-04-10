@@ -1,16 +1,8 @@
 import React from 'react'
+import { AnimatedBlobProps, GradientBackgroundProps, HeroSectionProps, IconBadgeProps, ProgressDotsProps } from '../types/form.types';
 
 const GradientBackground = () => {
 
-
-
-    // Icon Badge Component
-    interface IconBadgeProps {
-      icon: React.ReactNode;
-      size?: "sm" | "md" | "lg";
-      variant?: "light" | "dark";
-    }
-    
     const IconBadge = ({ icon, size = "md", variant = "light" }: IconBadgeProps) => {
       const sizes = {
         sm: "p-2",
@@ -29,18 +21,12 @@ const GradientBackground = () => {
         </div>
       );
     };
-// Animated Blob Component
-interface AnimatedBlobProps {
-  color: string;
-  position: string;
-  delay?: string;
-}
+
 
 const AnimatedBlob = ({ color, position, delay = "" }: AnimatedBlobProps) => (
   <div className={`absolute ${position} w-72 h-72 ${color} rounded-full mix-blend-screen filter blur-xl opacity-70 animate-blob ${delay}`} />
 );
 
-// Gradient Wave Component
 const GradientWave = () => (
   <div className="absolute inset-0 opacity-20">
     <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 1440 560">
@@ -55,12 +41,6 @@ const GradientWave = () => (
   </div>
 );
 
-// Progress Dots Component
-interface ProgressDotsProps {
-  count?: number;
-  activeIndex?: number;
-  color?: string;
-}
 
 const ProgressDots = ({ count = 3, activeIndex = 2, color = "white" }: ProgressDotsProps) => (
   <div className="flex justify-center gap-2 pt-4">
@@ -72,13 +52,7 @@ const ProgressDots = ({ count = 3, activeIndex = 2, color = "white" }: ProgressD
     ))}
   </div>
 );
-    // Hero Section Component
-    interface HeroSectionProps {
-      title: string;
-      description: string;
-      icon?: React.ReactNode;
-      showProgress?: boolean;
-    }
+    
     
     const HeroSection = ({ title, description, icon, showProgress = true }: HeroSectionProps) => (
       <div className="text-center space-y-6 max-w-md">
@@ -96,11 +70,7 @@ const ProgressDots = ({ count = 3, activeIndex = 2, color = "white" }: ProgressD
     );
     
 
-    // Gradient Background Component
-    interface GradientBackgroundProps {
-      children: React.ReactNode;
-      variant?: "default" | "dark" | "light";
-    }
+  
     
     const GradientBackground = ({ children, variant = "dark" }: GradientBackgroundProps) => {
       const variants = {

@@ -23,7 +23,7 @@ const PasswordField = ({
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="w-full h-11 pl-10 pr-10"
+          className="w-full h-11 pl-10 pr-10 rounded-md border border-input"
         />
 
         <button
