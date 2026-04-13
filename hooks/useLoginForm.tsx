@@ -12,6 +12,7 @@ export const useLoginForm = () => {
   });
 
   const [errors, setErrors] = useState<any>({});
+  const [loading , setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleChange = (field: string, value: string) => {
@@ -20,7 +21,7 @@ export const useLoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+setLoading(true);
     const validationErrors = validateAuthForm(form, "login");
 
     if (Object.keys(validationErrors).length > 0) {
@@ -37,15 +38,18 @@ export const useLoginForm = () => {
         body: JSON.stringify(form),
       });
 
-      const data = await res.json();
+      const data =  await res.json();
 
       if (res.ok) {
+        setLoading(false)
         toast.success("Login Successful");
         router.push("/dashboard");
       } else {
+        setLoading(false)
         toast.error(data.message || "login failed");
       }
     } catch {
+      setLoading(false)
       toast.error("Login error");
     }
   };
@@ -55,5 +59,6 @@ export const useLoginForm = () => {
     errors,
     handleChange,
     handleSubmit,
+    loading
   };
 };

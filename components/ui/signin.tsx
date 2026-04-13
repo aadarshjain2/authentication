@@ -15,7 +15,7 @@ import { useSignupForm } from "@/hooks/useSignupForm";
 const SignIn = () => {
    const [showPassword, setShowPassword] = useState(false);
 
-  const { form, errors, handleChange, handleSubmit } = useSignupForm();
+  const { form, errors, handleChange, handleSubmit , loading } = useSignupForm();
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row w-full">
@@ -81,9 +81,13 @@ const SignIn = () => {
                 </p>
               )}
 
-              <Button type="submit" variant="primary" fullWidth>
-                Sign Up
-              </Button>
+              <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg px-4 py-2.5 transition flex items-center justify-center gap-2"
+                >
+                  {loading ? "Sending..." : "Sign Up"}
+                </button>
 
 
             </form>

@@ -17,7 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
  
-const { form, errors, handleChange, handleSubmit } = useLoginForm();
+const { form, errors, handleChange, handleSubmit , loading} = useLoginForm();
   return (
     <div className="min-h-screen flex flex-col lg:flex-row w-full">
 
@@ -81,9 +81,13 @@ const { form, errors, handleChange, handleSubmit } = useLoginForm();
                 <Link href="/forgot-password">Forgot password?</Link>
               </div>
 
-              <Button type="submit" variant="primary" fullWidth>
-                Login
-              </Button>
+              <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg px-4 py-2.5 transition flex items-center justify-center gap-2"
+                >
+                  {loading ? "Sending..." : "Login"}
+                </button>
 
             </form>
 

@@ -12,7 +12,7 @@ export const useSignupForm = () => {
 
   const [errors, setErrors] = useState<any>({});
   const router = useRouter();
-
+  const [loading , setLoading] = useState<boolean>(false);
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -20,6 +20,7 @@ export const useSignupForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
     const validationErrors = validateAuthForm(form, "signup");
 
     if (Object.keys(validationErrors).length > 0) {
@@ -39,12 +40,15 @@ export const useSignupForm = () => {
       const data = await res.json();
 
       if (res.ok) {
+         setLoading(false);
         toast.success("Signup Successful");
         router.push("/login");
       } else {
+        setLoading(false);
         toast.error(data.message || "Signup failed");
       }
     } catch {
+      setLoading(false);
       toast.error("Signup error");
     }
   };
@@ -54,5 +58,6 @@ export const useSignupForm = () => {
     errors,
     handleChange,
     handleSubmit,
+    loading
   };
 };
