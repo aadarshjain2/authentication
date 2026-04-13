@@ -4,67 +4,22 @@ import { useState } from "react";
 import { Mail, User } from "lucide-react";
 import { Button } from "../common/Button";
 import GradientBackground from "./GradientBackground";
-import { useRouter } from "next/navigation";
 import FormHeader from "./FormHeader";
 import Card from "./Cards";
 import InputField from "./InputField";
 import PasswordField from "./PasswordField";
 import FormFooter from "./FormFooter";
-import { toast } from "react-toastify";
-import { validateAuthForm } from "@/utils/validation";
+import { useSignupForm } from "@/hooks/useSignupForm";
 
 
 const SignIn = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("")
-  const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState<any>({});
+   const [showPassword, setShowPassword] = useState(false);
 
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const formData = { name, email, password };
-
-    const validationErrors = validateAuthForm(formData, "signup");
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-const data = await res.json();
-      if (res.ok) {
-        setEmail("");
-        setPassword("");
-        setName("")
-        toast.success("Signup Successful")
-        router.push("/login");
-      } else {
-        
-        toast.error(data.message || "signup failed");
-      }
-    } catch (error) {
-      toast.error("An error occurred during Signup");
-    }
-  };
-
+  const { form, errors, handleChange, handleSubmit } = useSignupForm();
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row w-full">
-      {/* Left Side - Sign In Form */}
+    
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
           <FormHeader
@@ -80,8 +35,9 @@ const data = await res.json();
                 type="text"
                 label="Name"
                 placeholder="Enter the Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={form.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+
                 icon={User}
                 required
               />
@@ -96,8 +52,9 @@ const data = await res.json();
                 type="email"
                 label="Email"
                 placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                 value={form.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                
                 icon={Mail}
                 required
               />
@@ -110,8 +67,10 @@ const data = await res.json();
                 id="password"
                 label="Password"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                
+                 value={form.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+                
                 showPassword={showPassword}
                 onTogglePassword={() => setShowPassword(!showPassword)}
                 required

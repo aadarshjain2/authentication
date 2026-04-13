@@ -4,67 +4,20 @@ import { useState } from "react";
 import { Mail } from "lucide-react";
 import { Button } from "../common/Button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import GradientBackground from "./GradientBackground";
-import { toast } from "react-toastify";
 import Card from "./Cards";
 import InputField from "./InputField";
 import PasswordField from "./PasswordField";
 import Checkbox from "./Checkbox";
 import FormHeader from "./FormHeader";
 import FormFooter from "./FormFooter";
-import { validateAuthForm } from "@/utils/validation";
+import { useLoginForm } from "@/hooks/useLoginForm";
 const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
-  const [errors, setErrors] = useState<any>({});
-
-  const router = useRouter();
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-
-  const formData = { email, password };
-
-      const validationErrors = validateAuthForm(formData, "login");
-
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-
-
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify( formData),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setEmail("");
-        setPassword("");
-        toast.success("Login Successful");
-        router.push("/dashboard");
-      } else {
-        toast.error(data.message || "Login failed");
-      }
-
-    } catch (error) {
-      toast.error("Server error during login");
-    }
-  };
-
+ 
+const { form, errors, handleChange, handleSubmit } = useLoginForm();
   return (
     <div className="min-h-screen flex flex-col lg:flex-row w-full">
 
@@ -87,8 +40,9 @@ const Login = () => {
                   type="email"
                   label="Email"
                   placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={form.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                 
                   icon={Mail}
                 />
 
@@ -104,8 +58,8 @@ const Login = () => {
                   id="password"
                   label="Password"
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={form.password}
+                   onChange={(e) => handleChange("password", e.target.value)}
                   showPassword={showPassword}
                   onTogglePassword={() => setShowPassword(!showPassword)}
                 />
