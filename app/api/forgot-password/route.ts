@@ -18,13 +18,17 @@ export async function POST(req: Request) {
 
   const resetToken = crypto.randomBytes(32).toString("hex");
 
-  user.resetPasswordToken = resetToken;
-  user.resetPasswordExpire = Date.now() + 3600000;
+const hashedToken = crypto
+  .createHash("sha256")
+  .update(resetToken)
+  .digest("hex");
 
-  await user.save();
+user.resetPasswordToken = hashedToken;
+user.resetPasswordExpire = Date.now() + 3600000;
 
-  const resetLink = `${process.env.APP_URL}/reset-password/${resetToken}`;
+await user.save();
 
+const resetLink = `${process.env.APP_URL}/reset-password/${resetToken}`;
   await sendResetEmail(email, resetLink);
 
   return Response.json({
