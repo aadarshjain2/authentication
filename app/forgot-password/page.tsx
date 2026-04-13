@@ -39,16 +39,16 @@ const handleSubmit = async (e: React.FormEvent) => {
 };
 
   return (
-    <main className="min-h-screen bg-gray-300 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
 
         {/* Card */}
-        <div className="bg-gray-400 border border-gray-100 rounded-2xl p-8 shadow-xl">
+        <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-lg">
 
           {/* Icon */}
-          <div className="w-12 h-12 bg-gray-500 rounded-xl flex items-center justify-center mb-6">
+          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-6">
             <svg
-              className="w-6 h-6 text-gray-900"
+              className="w-6 h-6 text-blue-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -64,10 +64,11 @@ const handleSubmit = async (e: React.FormEvent) => {
 
           {!submitted ? (
             <>
-              <h1 className="text-xl font-semibold text-white mb-1">
+              <h1 className="text-xl font-semibold text-gray-900 mb-1">
                 Forgot your password?
               </h1>
-              <p className="text-sm text-gray-200 mb-6">
+
+              <p className="text-sm text-gray-600 mb-6">
                 Enter your email and we&apos;ll send you a reset link.
               </p>
 
@@ -75,10 +76,11 @@ const handleSubmit = async (e: React.FormEvent) => {
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-xs font-medium text-gray-500 mb-1.5"
+                    className="block text-xs font-medium text-gray-700 mb-1.5"
                   >
                     Email address
                   </label>
+
                   <input
                     id="email"
                     type="email"
@@ -86,48 +88,22 @@ const handleSubmit = async (e: React.FormEvent) => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full bg-gray-200 border border-gray-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg px-4 py-2.5 transition flex items-center justify-center gap-2"
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg px-4 py-2.5 transition flex items-center justify-center gap-2"
                 >
-                  {loading ? (
-                    <>
-                      <svg
-                        className="animate-spin w-4 h-4 text-gray-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
-                        />
-                      </svg>
-                      Sending...
-                    </>
-                  ) : (
-                    "Send reset link"
-                  )}
+                  {loading ? "Sending..." : "Send reset link"}
                 </button>
               </form>
             </>
           ) : (
-            /* Success state */
             <div className="text-center py-2">
-              <div className="w-10 h-10 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg
                   className="w-5 h-5 text-emerald-600"
                   fill="none"
@@ -142,19 +118,22 @@ const handleSubmit = async (e: React.FormEvent) => {
                   />
                 </svg>
               </div>
-              <h2 className="text-lg font-semibold text-gray-800 mb-1">
+
+              <h2 className="text-lg font-semibold text-gray-900 mb-1">
                 Check your inbox
               </h2>
-              <p className="text-sm text-gray-800">
+
+              <p className="text-sm text-gray-600">
                 We sent a reset link to{" "}
-                <span className="text-gray-800">{email}</span>
+                <span className="font-medium text-gray-900">{email}</span>
               </p>
+
               <button
                 onClick={() => {
                   setSubmitted(false);
                   setEmail("");
                 }}
-                className="mt-5 text-sm text-gray-800 hover:text-gray-300 transition underline underline-offset-2"
+                className="mt-5 text-sm text-blue-600 hover:text-blue-700 underline underline-offset-2"
               >
                 Try a different email
               </button>
@@ -162,10 +141,9 @@ const handleSubmit = async (e: React.FormEvent) => {
           )}
         </div>
 
-        
         <p className="text-center mt-5 text-sm text-gray-600">
           Remember your password?{" "}
-          <a href="/login" className="text-gray-600 hover:text-white transition">
+          <a href="/login" className="text-blue-600 hover:text-blue-700">
             Sign in
           </a>
         </p>
