@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function ResetPasswordPage() {
   const params = useParams();
@@ -11,14 +12,14 @@ export default function ResetPasswordPage() {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
+  
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setMessage("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -39,16 +40,16 @@ export default function ResetPasswordPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("Password reset successful");
+        toast.success("Password reset successful");
 
         setTimeout(() => {
           router.push("/login");
         }, 2000);
       } else {
-        setMessage(data.error || "Something went wrong");
+        toast.error(data.error || "Something went wrong");
       }
     } catch (error) {
-      setMessage("Server error");
+      toast.error("Server error");
     }
 
     setLoading(false);
@@ -90,9 +91,6 @@ export default function ResetPasswordPage() {
           {loading ? "Updating..." : "Reset Password"}
         </button>
 
-        {message && (
-          <p className="text-center text-sm text-red-500">{message}</p>
-        )}
       </form>
     </div>
   );

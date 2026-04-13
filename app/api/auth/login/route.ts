@@ -11,8 +11,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const { email, password } = loginSchema.parse(body);
-  // console.log("email", email)
-  // console.log("password", password)
+
     const token = await authService.login(email, password);
 
     const response = ApiResponse.success({

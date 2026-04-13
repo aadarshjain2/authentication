@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { signupSchema } from "@/validators/auth.validator";
 import { authService } from "@/services/auth.service";
+import { ApiResponse } from "@/utils/apiResponse";
 
 
 export async function POST(req: Request) {
@@ -14,19 +15,15 @@ const { name, email, password } = signupSchema.parse(body);
 const user = await authService.signup(name, email, password);
 
 
-    return NextResponse.json(
+    return ApiResponse.success(
       {
         message: "User created successfully",
         user: user,
       },
-      { status: 201 }
     );
   } catch (error) {
     console.error("Signup error:", error);
 
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    return ApiResponse.error("Internal server error", 500);
   }
 }
