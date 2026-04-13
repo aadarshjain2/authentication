@@ -80,7 +80,7 @@ const ProgressDots = ({ count = 3, activeIndex = 2, color = "white" }: ProgressD
       };
     
       return (
-        <div className={`hidden lg:flex flex-1 relative overflow-hidden`}>
+        <div className={` lg:flex md:flex-1 relative md:overflow-hidden`}>
           <div className={`absolute inset-0 ${variants[variant]}`} />
           
           <div className="absolute inset-0">

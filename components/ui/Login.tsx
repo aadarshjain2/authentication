@@ -19,7 +19,7 @@ const Login = () => {
  
 const { form, errors, handleChange, handleSubmit , loading} = useLoginForm();
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row w-full">
+    <div className="min-h-screen flex flex-col-reverse md:flex-col lg:flex-row w-full">
 
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-background">
 
